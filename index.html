@@ -2,20 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Date Ask Flow</title>
+  <title>Date Ask</title>
   <style>
     * {
       box-sizing: border-box;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
       background-color: #ffe6f0;
       margin: 0;
       padding: 0;
-      overflow: hidden;
       height: 100vh;
-      width: 100vw;
+      overflow: hidden;
       position: relative;
     }
 
@@ -24,18 +23,15 @@
       top: 40%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: white;
+      background: white;
       border: 2px solid #ff69b4;
       border-radius: 20px;
       padding: 30px;
-      box-shadow: 0 0 25px rgba(255, 105, 180, 0.5);
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.5);
       text-align: center;
-      z-index: 1;
     }
 
-    #hintBox,
-    #cornerBox,
-    #finalBox {
+    #hintBox, #cornerBox, #finalBox {
       display: none;
     }
 
@@ -43,7 +39,7 @@
       position: absolute;
       top: 20px;
       right: 20px;
-      background-color: #ffb6c1;
+      background: #ffb6c1;
       padding: 10px 20px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(255, 0, 102, 0.3);
@@ -51,18 +47,16 @@
     }
 
     #finalBox {
-      display: none;
-      background: white;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 0 30px rgba(255, 20, 147, 0.4);
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 0 30px rgba(255, 20, 147, 0.4);
       text-align: center;
-      z-index: 2;
-      width: 300px;
+      width: 320px;
     }
 
     .buttonRow {
@@ -80,7 +74,6 @@
       cursor: pointer;
       position: absolute;
       transition: 0.2s ease;
-      z-index: 10;
     }
 
     #yesBtn {
@@ -95,16 +88,6 @@
       color: white;
       left: 55%;
       bottom: 10px;
-      width: auto;
-    }
-
-    @media (max-width: 500px) {
-      #yesBtn {
-        left: 15%;
-      }
-      #noBtn {
-        left: 55%;
-      }
     }
   </style>
 </head>
@@ -117,7 +100,7 @@
   <div id="cornerBox" onclick="showFinal()">Click Me</div>
 
   <div id="finalBox">
-    <h2 id="questionText">Will you go on a date with me? 🥺</h2>
+    <h2>Will you go on a date with me? 🥺</h2>
     <div class="buttonRow">
       <button id="yesBtn" onclick="alert('Yesss! ❤️')">Yes</button>
       <button id="noBtn">No</button>
@@ -139,36 +122,49 @@
 
     const noBtn = document.getElementById("noBtn");
 
-    function moveNoBtnAnywhere() {
-      const btnWidth = noBtn.offsetWidth;
-      const btnHeight = noBtn.offsetHeight;
-
-      // Don't let it go over question area or Yes button
-      const safeTop = 50; // px from top to avoid title
-      const safeBottom = window.innerHeight - 150; // avoid Yes button
-
-      const safeLeft = 20;
-      const safeRight = window.innerWidth - btnWidth - 20;
-
-      const newX = Math.floor(Math.random() * (safeRight - safeLeft)) + safeLeft;
-      const newY = Math.floor(Math.random() * (safeBottom - safeTop)) + safeTop;
-
-      noBtn.style.left = `${newX}px`;
-      noBtn.style.top = `${newY}px`;
-    }
-
-    document.addEventListener('mousemove', (e) => {
+    document.addEventListener("mousemove", (e) => {
       const rect = noBtn.getBoundingClientRect();
       const distX = e.clientX - (rect.left + rect.width / 2);
       const distY = e.clientY - (rect.top + rect.height / 2);
-      const distance = Math.sqrt(distX * distX + distY * distY);
+      const distance = Math.sqrt(distX ** 2 + distY ** 2);
 
       if (distance < 80) {
-        moveNoBtnAnywhere();
+        // Calculate new position
+        let moveX = -Math.sign(distX) * 60;
+        let moveY = -Math.sign(distY) * 60;
+
+        // Get current position
+        const currentLeft = noBtn.offsetLeft;
+        const currentTop = noBtn.offsetTop;
+
+        // New positions
+        let newLeft = currentLeft + moveX;
+        let newTop = currentTop + moveY;
+
+        // Boundary check
+        newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - noBtn.offsetWidth));
+        newTop = Math.max(0, Math.min(newTop, window.innerHeight - noBtn.offsetHeight));
+
+        noBtn.style.left = `${newLeft}px`;
+        noBtn.style.top = `${newTop}px`;
       }
     });
 
-    noBtn.addEventListener('click', moveNoBtnAnywhere);
+    noBtn.addEventListener("click", () => {
+      // Still move on click
+      const offset = 100;
+      const randomX = Math.random() < 0.5 ? -offset : offset;
+      const randomY = Math.random() < 0.5 ? -offset : offset;
+
+      let newLeft = noBtn.offsetLeft + randomX;
+      let newTop = noBtn.offsetTop + randomY;
+
+      newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - noBtn.offsetWidth));
+      newTop = Math.max(0, Math.min(newTop, window.innerHeight - noBtn.offsetHeight));
+
+      noBtn.style.left = `${newLeft}px`;
+      noBtn.style.top = `${newTop}px`;
+    });
   </script>
 
 </body>
